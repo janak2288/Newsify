@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Source;
+use Illuminate\Support\Facades\Storage;
 
 class SourceController extends Controller
 {
@@ -11,7 +13,8 @@ class SourceController extends Controller
      */
     public function index()
     {
-        //
+        $sources = Source::all();
+        return view('sources.index', compact('sources'));
     }
 
     /**
@@ -19,7 +22,7 @@ class SourceController extends Controller
      */
     public function create()
     {
-        //
+        return view('sources.create');
     }
 
     /**
@@ -27,38 +30,69 @@ class SourceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'json_url' => 'required|url',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $logoPath = $request->file('logo') ? $request->file('logo')->store('public/logos') : null;
+
+        Source::create([
+            'name' => $request->name,
+            'json_url' => $request->json_url,
+            'logo' => $logoPath,
+        ]);
+
+        return redirect()->route('sources.index')->with('success', 'Source created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+    
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Source $source)
     {
-        //
+        return view('sources.edit', compact('source'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Source $source)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'json_url' => 'required|url',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $logoPath = $request->file('logo') ? $request->file('logo')->store('public/logos') : $source->logo;
+
+        $source->update([
+            'name' => $request->name,
+            'json_url' => $request->json_url,
+            'logo' => $logoPath,
+        ]);
+
+        return redirect()->route('sources.index')->with('success', 'Source updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Source $source)
     {
-        //
+        if ($source->logo) {
+            Storage::delete($source->logo);
+        }
+
+        $source->delete();
+
+        return redirect()->route('sources.index')->with('success', 'Source deleted successfully.');
     }
 }
