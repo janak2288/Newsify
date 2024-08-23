@@ -7,7 +7,7 @@
         <div class="bg-white p-6 shadow-lg rounded-lg mb-6 border border-indigo-200">
             <form method="GET" action="{{ route('news.index') }}" class="flex flex-col md:flex-row gap-4 justify-between">
                 <select name="source_id" class="form-select p-2 border border-gray-300 rounded-md w-full">
-                    <option value="">स्रोत </option>
+                    <option value="">Sources </option>
                     @foreach ($sources as $source)
                         <option value="{{ $source->id }}" {{ request('source_id') == $source->id ? 'selected' : '' }}>
                             {{ $source->name }}
@@ -27,8 +27,8 @@
             @foreach ($posts as $post)
                 <div class="bg-white p-6 shadow-lg rounded-lg border border-indigo-200">
                     <img src="{{ $post->thumbnail_url }}" alt="Thumbnail" class="w-full h-32 object-cover mb-4 rounded-md">
-                    <a href="{{ $post->news_url }}" class="text-blue-600 hover:underline">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ $post->title }}</h3>
+<a href="{{ route('news.redirect', $post->id) }}" class="text-indigo-600 hover:text-green-600" target="_blank">
+                        <h3 class="text-lg font-semibold ">{{ $post->title }}</h3>
                         <p class="text-gray-700 mt-2">{{ $post->news_overview }}</p>
                     </a>
                      <div class="text-gray-700 mt-2 flex items-center"> 
@@ -39,7 +39,7 @@
                                        {{$post->nepali_date['d']}}  गते  
                                        {{$post->nepali_date['l']}} </p> </div>
                     <div class="flex items-center mt-2">
-  <img src="{{ env('APP_URL').$post->source->logo }}" alt="{{$post->source->name}}" class="w-12 h-12 object-cover rounded-full mr-3 border border-2 border-indigo-500">
+  <img src="{{ env('APP_URL').$post->source->logo }}" alt="{{$post->source->name}}" class="w-8 h-8 object-cover rounded-full mr-3 border border-2 border-indigo-500">
                         <p class="text-gray-700">{{ $post->source->name }}</p>
                          
                     </div>

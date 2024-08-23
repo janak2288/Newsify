@@ -6,6 +6,7 @@ use App\Http\Controllers\SourceController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ClickController;
 
 
 
@@ -23,5 +24,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 
 Route::get('/', [NewsController::class, 'index'])->name('news.index');
 Route::get('/news/load-more', [NewsController::class, 'loadMore'])->name('news.load_more');
+
+Route::get('news/{id}', [ClickController::class, 'redirectToNewsUrl'])->name('news.redirect');
 
 require __DIR__.'/auth.php';
