@@ -1,8 +1,14 @@
 <x-app-layout>
+ <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Add New Source') }}
+        </h2>
+    </x-slot>
+
+
     <div class="container mx-auto p-6">
                 <div class="bg-white p-2 rounded-lg shadow-lg">
 
-        <h1 class="text-3xl font-semibold mb-6">Add New Source</h1>
 
         <form action="{{ route('sources.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf

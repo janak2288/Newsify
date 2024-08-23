@@ -1,7 +1,14 @@
 <x-app-layout>
+
+
+     <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Edit Source') }}
+        </h2>
+    </x-slot>
+
     <div class="container mx-auto p-6">
         <div class="bg-white p-2 rounded-lg shadow-lg">
-        <h1 class="text-3xl font-semibold mb-6">Edit Source</h1>
 
         <form action="{{ route('sources.update', $source) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
@@ -28,7 +35,7 @@
                 <input type="file" name="logo" id="logo" class="mt-1 block w-full text-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 @if ($source->logo)
                     <div class="mt-2">
-                        <img src="{{ Storage::url($source->logo) }}" alt="Logo" class="w-16 h-16 object-cover">
+                        <img src="{{ env('APP_URL'). $source->logo }}" alt="Logo" class="w-auto h-16 object-cover">
                     </div>
                 @endif
                 @error('logo')
