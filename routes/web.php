@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ClickController;
+use App\Http\Controllers\JsonConversionController;
 
 
 
@@ -20,6 +21,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
     Route::get('/news-list', [PostController::class, 'index'])->name('posts.index');
 
     Route::resource('sources', SourceController::class);
+    Route::resource('json-conversion', JsonConversionController::class)->except(['destroy']);
+
 });
 
 Route::get('/', [NewsController::class, 'index'])->name('news.index');

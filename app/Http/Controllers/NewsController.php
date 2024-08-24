@@ -46,7 +46,7 @@ if (env('POST_DATE_FORMAT') === "BS") {
     $nepali_date = $this->convertToNepaliDate($post->published_date);
     $post->date = $nepali_date['Y'] . ' ' .
                   $nepali_date['F'] . ' ' .
-                  $nepali_date['d'] . ' ' .
+                  $nepali_date['d'] . ' ' .'गते '.
                   $nepali_date['l'];
 } else {
     // Format the original published date in Gregorian format
@@ -113,7 +113,7 @@ if (env('POST_DATE_FORMAT') === "BS") {
             $nepali_date = $this->convertToNepaliDate($post->published_date);
             $post->date = $nepali_date['Y'] . ' ' .
                           $nepali_date['F'] . ' ' .
-                          $nepali_date['d'] . ' ' .
+                          $nepali_date['d'] . ' ' .'गते '.
                           $nepali_date['l'];
         } else {
             $date = \Carbon\Carbon::parse($post->published_date);
@@ -133,18 +133,15 @@ if (env('POST_DATE_FORMAT') === "BS") {
 
 
 
+protected function cleanText($text)
+{
+    $text = htmlspecialchars_decode($text);
+    $text = strip_tags($text);
+    $text = preg_replace('/\s+/', ' ', $text);
+    $text = preg_replace('/&nbsp;|&#8216;|&#8220;|&#8221;|[\[\]]/', '', $text);
+    return trim($text); // Trim any leading or trailing whitespace
+}
 
-    protected function cleanText($text)
-    {
-        $text = htmlspecialchars_decode($text);
-
-        $text = strip_tags($text);
-
-        $text = preg_replace('/\s+/', ' ', $text); 
-        $text = preg_replace('/&nbsp;|&#8216;/', '', $text); 
-
-        return $text;
-    }
 
   protected function convertToNepaliDate($date)
 {
