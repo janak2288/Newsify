@@ -1,67 +1,145 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Newsify
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Newsify Logo](https://i.ibb.co/DkkM1z4/logo.png)
 
-## About Laravel
+**Newsify** is an open-source Laravel application for aggregating and displaying news. It features a user-friendly admin panel and integrates with a WordPress site to fetch and display news.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Simple admin interface
+- Fetches news from a WordPress site via a custom API
+- Built with Laravel 11 and styled with Tailwind CSS
+- SEO-friendly
+- Easy to set up and extend
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Installation
 
-## Learning Laravel
+Follow these steps to set up Newsify:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Clone the Repository
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Clone the repository to your local machine:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone https://github.com/janak2288/news-aggregator.git
+```
+ ### 2. Navigate to the Project Directory
 
-## Laravel Sponsors
+Change to the project directory:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+cd news-aggregator
+```
+### 3. Install Dependencies
 
-### Premium Partners
+Install PHP and JavaScript dependencies:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```bash
+composer install
+npm install
+```
+### 4. Set Up Environment Variables
 
+Copy the example environment file and update the configuration:
+
+```bash
+cp .env.example .env
+```
+
+ ### 5. Generate Application Key
+
+Generate a new application key:
+
+```bash
+php artisan key:generate
+```
+
+### 6. Run Migrations and Seeders
+
+Run the database migrations and seed the database:
+
+```bash
+php artisan migrate --seed
+```
+The default admin user will be created with the following credentials:
+
+'Email: admin@example.com'
+'Password: password'
+
+### 7. Compile Assets
+
+Compile the application's assets:
+
+```bash
+npm run dev
+```
+ ### 8. Serve the Application
+
+Start the Laravel development server:
+
+```bash
+php artisan serve
+```
+## API Integration with WordPress
+
+To integrate Newsify with your WordPress site, add the following code to your `functions.php` file:
+
+```php
+function wl_posts() {
+    $args = [
+        'numberposts' => 20,
+        'post_type' => 'post'
+    ];
+
+    $posts = get_posts($args);
+
+    $data = [];
+    $i = 0;
+
+    foreach ($posts as $post) {
+        $data[$i]['title'] = $post->post_title;
+        $data[$i]['newsUrl'] = get_permalink($post->ID);
+        $data[$i]['thumbnailUrl'] = get_the_post_thumbnail_url($post->ID, 'large');
+        $data[$i]['newsOverView'] = get_the_excerpt($post->ID);
+        $data[$i]['publishedDate'] = get_the_date('c', $post->ID);
+        $i++;
+    }
+
+    return $data;
+}
+
+add_action('rest_api_init', function() {
+    register_rest_route('newsify/v1', 'posts', [
+        'methods' => 'GET',
+        'callback' => 'wl_posts',
+    ]);
+});
+```
+
+
+Your API URL will be:' https://your-wordpress-site.com/wp-json/newsify/v1/posts'
+
+ ## Screenshots
+
+Screenshots of the application can be found in the `screenshots` folder:
+
+- `screenshot1.jpg`
+- `screenshot2.jpg`
+- `screenshot3.jpg`
+- `screenshot4.jpg`
+ - `screenshot5.jpg`
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
+Feel free to contribute by opening issues or submitting pull requests. Your feedback and contributions are welcome!
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-"# news-aggregator" 
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Credits
+
+- **Laravel** - The PHP framework used for this project. [Laravel](https://laravel.com/)
+- **Tailwind CSS** - The CSS framework used for styling. [Tailwind CSS](https://tailwindcss.com/)
+- **WordPress** - The CMS used for fetching news. [WordPress](https://wordpress.org/)
+
+Special thanks to the open-source community for their contributions to these resources.
+
