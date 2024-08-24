@@ -34,10 +34,7 @@
                      <div class="text-gray-700 mt-2 flex items-center"> 
                                    <x-heroicon-o-calendar-date-range  class="h-4 w-4 mr-1"/>
 
-                                    <p>    {{$post->nepali_date['Y']}} 
-                                       {{$post->nepali_date['F']}}
-                                       {{$post->nepali_date['d']}}  गते  
-                                       {{$post->nepali_date['l']}} </p> </div>
+       <p>    {{$post->date}} </p> </div>
                     <div class="flex items-center mt-2">
   <img src="{{ env('APP_URL').$post->source->logo }}" alt="{{$post->source->name}}" class="w-8 h-8 object-cover rounded-full mr-3 border border-2 border-indigo-500">
                         <p class="text-gray-700">{{ $post->source->name }}</p>
@@ -59,28 +56,42 @@
     </div>
 
     <script>
-        document.getElementById('load-more').addEventListener('click', function() {
-            var button = this;
-            var page = button.getAttribute('data-page');
-            var sourceId = new URLSearchParams(window.location.search).get('source_id') || '';
-            var publishedFrom = new URLSearchParams(window.location.search).get('published_from') || '';
-            var publishedTo = new URLSearchParams(window.location.search).get('published_to') || '';
+    document.getElementById('load-more').addEventListener('click', function() {
+        var button = this;
+        var page = button.getAttribute('data-page');
+        var sourceId = new URLSearchParams(window.location.search).get('source_id') || '';
+        var publishedFrom = new URLSearchParams(window.location.search).get('published_from') || '';
+        var publishedTo = new URLSearchParams(window.location.search).get('published_to') || '';
 
-            fetch(`{{ route('news.load_more') }}?page=${page}&source_id=${sourceId}&published_from=${publishedFrom}&published_to=${publishedTo}`, {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'text/html',
-                },
-            })
-            .then(response => response.text())
-            .then(html => {
+        fetch(`{{ route('news.load_more') }}?page=${page}&source_id=${sourceId}&published_from=${publishedFrom}&published_to=${publishedTo}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'text/html',
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else if (response.status === 404) {
+                button.style.display = 'none'; // Hide the button if no more posts are found
+                return Promise.reject('No more posts available.');
+            } else {
+                return Promise.reject('An error occurred.');
+            }
+        })
+        .then(html => {
+            if (html.trim() === '') {
+                button.style.display = 'none'; // Hide the button if the HTML is empty
+            } else {
                 document.getElementById('news-container').insertAdjacentHTML('beforeend', html);
                 button.setAttribute('data-page', parseInt(page) + 1);
-                if (!new URL(response.url).searchParams.get('page')) {
-                    button.style.display = 'none';
-                }
-            });
+            }
+        })
+        .catch(error => {
+            console.error(error);
         });
-    </script>
+    });
+</script>
+
 @endsection
