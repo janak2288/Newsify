@@ -119,15 +119,18 @@ add_action('rest_api_init', function() {
 
 Your API URL will be:' https://your-wordpress-site.com/wp-json/newsify/v1/posts'
 
- ## Screenshots
 
-Screenshots of the application can be found in the `screenshots` folder:
+## Screenshots
 
-- `screenshot1.jpg`
-- `screenshot2.jpg`
-- `screenshot3.jpg`
-- `screenshot4.jpg`
- - `screenshot5.jpg`
+Below are some screenshots of the application:
+
+![Screenshot 1](screenshots/screenshot1.jpg)
+![Screenshot 2](screenshots/screenshot2.jpg)
+![Screenshot 3](screenshots/screenshot3.jpg)
+![Screenshot 4](screenshots/screenshot4.jpg)
+![Screenshot 5](screenshots/screenshot5.jpg)
+
+
 ## Contributing
 
 Feel free to contribute by opening issues or submitting pull requests. Your feedback and contributions are welcome!
